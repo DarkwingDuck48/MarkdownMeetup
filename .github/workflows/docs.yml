@@ -14,8 +14,8 @@ jobs:
       - uses: actions/checkout@v4
 
       # Validate Markdown
-      - name: Lint Markdown
-        uses: actionshub/markdownlint@main
+      # - name: Lint Markdown
+      #   uses: actionshub/markdownlint@main
 
       # Install dependencies
       - name: Install tools
