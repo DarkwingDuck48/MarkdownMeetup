@@ -77,11 +77,11 @@ print(some_msg)
 [Ссылка гайд](https://www.markdownguide.org/cheat-sheet/)
 
 Можно вставить изображение - в полный размер изображения.
-![alt text](../../pronyra.jpg)
+![alt text](images/pronyra.jpg)
 
 Или изменить его так, как нужно.
 <center>
-<img src="../../pronyra.jpg" alt="drawing" width="200" style="transform:rotate(45deg);"/>
+<img src="images/pronyra.jpg" alt="drawing" width="200" style="transform:rotate(45deg);"/>
 </center>
 
 ## 1.3. Таблицы
