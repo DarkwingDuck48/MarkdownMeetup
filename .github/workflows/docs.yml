@@ -28,6 +28,9 @@ jobs:
         run: |
           # Create output directory
           mkdir -p outputs
+           # Copy images to a temporary directory (prevents path issues)
+          mkdir -p temp_images
+          find docs -name "*.png" -exec cp {} temp_images/ \;
           
           # Convert individual MD files to DOCX
           if [ -d "docs/one_file" ] && [ "$(ls -A docs/one_file/*.md 2>/dev/null)" ]; then
@@ -38,7 +41,7 @@ jobs:
               [ -f "$file" ] || continue  # Skip if not a regular file
               output_name="outputs/$(basename "$file" .md).docx"
               echo "Converting $file to $output_name"
-              pandoc "$file" -f markdown -t docx -o "$output_name"
+              pandoc "$file" -f markdown -t docx -o "$output_name" --resource-path=.:temp_images --extract-media=temp_images
             done
           else
             echo "No Markdown files found in docs/one_file/"
@@ -52,6 +55,8 @@ jobs:
         run: |
           pandoc docs/sep_files/*.md -f markdown -t docx -o outputs/combined.docx \
             --toc \
+            --resource-path=.:temp_images \
+            --extract-media=temp_images
             --metadata-file=docs/meta.yaml || echo "No files to combine"
 
       # Process presentations
