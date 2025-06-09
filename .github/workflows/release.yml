@@ -37,8 +37,8 @@ jobs:
           fi
 
           # Combined document
-          if ls docs/one_file/*.md 1> /dev/null 2>&1; then
-            pandoc docs/one_file/*.md -f markdown -t docx -o "dist/combined.docx" --toc
+          if ls docs/sep_files/*.md 1> /dev/null 2>&1; then
+            pandoc docs/sep_files/*.md -f markdown -t docx -o "dist/combined.docx" --toc
           fi
 
           # Presentations
@@ -54,16 +54,16 @@ jobs:
       - name: Create Release
         uses: softprops/action-gh-release@v1
         with:
-          files: |
-            dist/*.docx
-            dist/presentations/*.pptx
-          tag_name: ${{ github.ref_name }}
-          name: "Version ${{ github.ref_name }}"
-          body: |
-            Documentation for ${{ github.ref_name }}
-            Generated on $(date -u +'%Y-%m-%d')
+            files: |
+                dist/*.docx
+                dist/presentations/*.pptx
+                tag_name: ${{ github.ref_name }}
+                name: "Version ${{ github.ref_name }}"
+                body: |
+                Documentation for ${{ github.ref_name }}
+                Generated on $(date -u +'%Y-%m-%d')
             
-            ### Included Files:
-            $(ls -1 dist/*.docx dist/presentations/*.pptx 2>/dev/null | sed 's/^/- /')
+                ### Included Files:
+                $(cd dist && find . -type f \( -name "*.docx" -o -name "*.pptx" \) -printf '- %p\n')
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+            GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
