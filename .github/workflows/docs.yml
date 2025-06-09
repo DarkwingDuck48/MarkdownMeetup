@@ -32,7 +32,7 @@ jobs:
           # Convert individual MD files to DOCX
           for file in $(find docs/one_file -name "*.md"); do
             output_name="outputs/$(basename "$file" .md).docx"
-            pandoc "$file" -o "$output_name"
+            pandoc "$file" -f markdown -t docx -o "$output_name"
           done
           
           # Convert README to PDF
@@ -41,7 +41,7 @@ jobs:
       # Combine multiple files
       - name: Merge Markdown to single DOCX
         run: |
-          pandoc docs/sep_files/*.md -o outputs/combined.docx \
+          pandoc docs/sep_files/*.md -f markdown -t docx -o outputs/combined.docx \
             --toc \
             --metadata-file=docs/meta.yaml || echo "No files to combine"
 
