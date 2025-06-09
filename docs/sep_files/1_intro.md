@@ -1,6 +1,6 @@
-# Шикарное название для всего документа
+# Шикарное название для всего документа #
 
-## Это секция для введения
+## Это секция для введения ##
 
 Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean id arcu sit amet massa elementum ultrices. Praesent at rutrum est. Sed eget arcu maximus, eleifend lectus sed, interdum odio. Ut diam nibh, maximus et blandit consequat, tincidunt a ligula. Duis id odio a orci lobortis ultrices. Phasellus lorem justo, malesuada sit amet aliquet id, faucibus et nisi. Sed a leo molestie, sollicitudin mi eu, laoreet massa. Proin vestibulum hendrerit nibh, et maximus libero imperdiet nec.
 

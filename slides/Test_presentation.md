@@ -1,10 +1,11 @@
 ---
-theme: default
+theme: uncover
+marp: true
 paginate: true
 ---
-# Презентация
+# Презентация #
 
-## Slide 1  
+## Slide 1 ##
 
 Content for presentations.
 
@@ -12,6 +13,6 @@ Content for presentations.
 
 ---
 
-## Slide 2
+## Slide 2 ##
 
 Проверка русского языка 🏃‍♂️
