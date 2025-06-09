@@ -1,0 +1,23 @@
+# Basic document info
+title: "Project Documentation"
+subtitle: "Technical Reference Manual"
+author: 
+  - "Maxim Britvin"
+date: "2025-06-20"
+
+# Publishing info
+publisher: "KorusConsulting"
+abstract: |
+  Этот документ является примером для показа на митапе
+
+# Formatting options
+toc: true                         # Show table of contents
+toc-depth: 3                      # Show down to h3 headers
+numbersections: true              # Number sections
+geometry: "margin=1in"            # Page margins
+mainfont: "Calibri"       # Default font
+fontsize: 14pt                    # Base font size
+linestretch: 1.25                 # Line spacing
+
+# Custom variables
+department: "EPM"

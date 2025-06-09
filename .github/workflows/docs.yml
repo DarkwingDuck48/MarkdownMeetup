@@ -1,0 +1,65 @@
+name: Docs CI/CD
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      # Checkout repo
+      - uses: actions/checkout@v4
+
+      # Validate Markdown
+      - name: Lint Markdown
+        uses: actionshub/markdownlint@main
+
+      # Install dependencies
+      - name: Install tools
+        run: |
+          sudo apt-get install pandoc -y
+          npm install -g @marp-team/marp-cli
+
+      # Process single files
+      - name: Convert individual files
+        run: |
+          # Create output directory
+          mkdir -p outputs
+          
+          # Convert individual MD files to DOCX
+          for file in $(find docs/one_file -name "*.md"); do
+            output_name="outputs/$(basename "$file" .md).docx"
+            pandoc "$file" -o "$output_name"
+          done
+          
+          # Convert README to PDF
+          # pandoc docs/README.md -o outputs/README.pdf
+
+      # Combine multiple files
+      - name: Merge Markdown to single DOCX
+        run: |
+          pandoc docs/sep_files/*.md -o outputs/combined.docx \
+            --toc \
+            --metadata-file=docs/meta.yaml || echo "No files to combine"
+
+      # Process presentations
+      - name: Generate presentations
+        run: |
+          mkdir -p outputs/presentations
+          for file in $(find slides -name "*_presentation.md"); do
+            output_name="outputs/presentations/$(basename "$file" .md).pptx"
+            marp "$file" --pptx --output "$output_name"
+          done || echo "No presentations found"
+
+      # Upload all artifacts
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: documentation-exports
+          path: |
+            outputs/*.docx
+            outputs/*.pdf
+            outputs/presentations/*.pptx
