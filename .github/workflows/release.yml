@@ -5,6 +5,9 @@ on:
     tags:
       - 'v*'  # Trigger on version tags (e.g., v1.0.0)
 
+permissions:
+  contents: write  # Required for creating releases
+
 jobs:
   build-and-release:
     runs-on: ubuntu-latest
@@ -20,7 +23,7 @@ jobs:
           sudo apt-get install pandoc -y
           npm install -g @marp-team/marp-cli
 
-      # Convert all documents
+      # Convert documents
       - name: Generate documents
         run: |
           mkdir -p dist
@@ -34,7 +37,7 @@ jobs:
           fi
 
           # Combined document
-          if [ -d "docs/one_file" ]; then
+          if ls docs/one_file/*.md 1> /dev/null 2>&1; then
             pandoc docs/one_file/*.md -f markdown -t docx -o "dist/combined.docx" --toc
           fi
 
@@ -47,7 +50,7 @@ jobs:
             done
           fi
 
-      # Create release and upload assets
+      # Create release
       - name: Create Release
         uses: softprops/action-gh-release@v1
         with:
@@ -55,7 +58,12 @@ jobs:
             dist/*.docx
             dist/presentations/*.pptx
           tag_name: ${{ github.ref_name }}
-          name: "Release ${{ github.ref_name }}"
-          body: "Automated documentation release"
+          name: "Version ${{ github.ref_name }}"
+          body: |
+            Documentation for ${{ github.ref_name }}
+            Generated on $(date -u +'%Y-%m-%d')
+            
+            ### Included Files:
+            $(ls -1 dist/*.docx dist/presentations/*.pptx 2>/dev/null | sed 's/^/- /')
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
