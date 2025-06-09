@@ -12,82 +12,73 @@ jobs:
     steps:
       # Checkout repo
       - uses: actions/checkout@v4
-
-      # Validate Markdown
-      # - name: Lint Markdown
-      #   uses: actionshub/markdownlint@main
+        with:
+          fetch-depth: 0  # Required for proper file discovery
 
       # Install dependencies
       - name: Install tools
         run: |
-          sudo apt-get install pandoc -y
-          npm install -g @marp-team/marp-cli
+          sudo apt-get update
+          sudo apt-get install -y pandoc python3-pip
+          npm install -g @mermaid-js/mermaid-cli @marp-team/marp-cli
+          pip install pandoc-mermaid-filter
 
-      # Process single files
-      - name: Convert individual files
+      # Process Mermaid diagrams
+      - name: Convert Mermaid to images
         run: |
-          # Create output directory
-          mkdir -p outputs
-           # Copy images to a temporary directory (prevents path issues)
-          mkdir -p temp_images
-          find docs/one_file/images -name "*.jpg" -exec cp {} temp_images/ \;
-          
-          # Convert individual MD files to DOCX
-          if [ -d "docs/one_file" ] && [ "$(ls -A docs/one_file/*.md 2>/dev/null)" ]; then
-            echo "Converting Markdown files in docs/one_file/"
+          mkdir -p dist/mermaid
+          find docs -name "*.md" -exec grep -l "```mermaid" {} \; | while read file; do
+            # Create unique output directory per file
+            dir_hash=$(echo "$file" | md5sum | cut -c1-8)
+            mkdir -p "dist/mermaid/$dir_hash"
             
-            # Convert each MD file to DOCX
-            for file in docs/one_file/*.md; do
-              [ -f "$file" ] || continue  # Skip if not a regular file
-              output_name="outputs/$(basename "$file" .md).docx"
-              echo "Converting $file to $output_name"
-              pandoc "$file" -f markdown -t docx -o "$output_name" --resource-path=.:temp_images --extract-media=temp_images
+            # Extract and convert each mermaid block
+            awk '/```mermaid/{flag=1; i++; next} /```/{flag=0} flag' "$file" | while read -r code; do
+              if [ -n "$code" ]; then
+                echo "$code" | mmdc -o "dist/mermaid/$dir_hash/diagram_${i}.png" -w 1600 -H 1200 --scale 2
+                sed -i "s|```mermaid.*```|![](mermaid/$dir_hash/diagram_${i}.png)|g" "$file"
+              fi
             done
-          else
-            echo "No Markdown files found in docs/one_file/"
-          fi
-          
-          # Convert README to PDF
-          # pandoc docs/README.md -o outputs/README.pdf
-      - name: Convert Markdown with images
+          done
+
+      # Process images and documents
+      - name: Process documents
         run: |
-          # Create working directory structure
-          mkdir -p pandoc_workdir/images
+          mkdir -p outputs
           
-          # Copy all images preserving relative paths
-          if [ -d "docs/one_file/images" ]; then
-            cp -r docs/one_file/images/* pandoc_workdir/images/
+          # Convert individual files
+          if [ -d "docs/one_file" ]; then
+            for file in docs/one_file/*.md; do
+              [ -f "$file" ] || continue
+              output_name="outputs/$(basename "$file" .md).docx"
+              pandoc "$file" -f markdown -t docx -o "$output_name" \
+                --resource-path=.:docs/one_file:dist \
+                --extract-media=dist \
+                --filter pandoc-mermaid \
+            done
           fi
-          
-          # Convert with proper resource paths
-          pandoc docs/one_file/*.md \
-            -o outputs/combined2.docx \
-            --resource-path=.:docs/one_file:pandoc_workdir \
-            --extract-media=pandoc_workdir \
-            --toc
-          
-          # Verify images were processed
-          echo "Processed images:"
-          find pandoc_workdir -type f -name "*.png" -o -name "*.jpg"
-      # Combine multiple files
-      - name: Merge Markdown to single DOCX
-        run: |
-          pandoc docs/sep_files/*.md -f markdown -t docx -o outputs/combined.docx \
-            --toc \
-            --resource-path=.:temp_images \
-            --extract-media=temp_images
-            --metadata-file=docs/meta.yaml || echo "No files to combine"
+
+          # Create combined document
+          if ls docs/sep_files/*.md 1> /dev/null 2>&1; then
+            pandoc docs/sep_files/*.md -o outputs/combined.docx \
+              --toc \
+              --resource-path=.:docs/sep_files:dist \
+              --extract-media=dist \
+              --metadata-file=docs/meta.yaml \
+              --filter pandoc-mermaid
+          fi
 
       # Process presentations
       - name: Generate presentations
         run: |
           mkdir -p outputs/presentations
-          for file in $(find slides -name "*_presentation.md"); do
+          for file in slides/*_presentation.md; do
+            [ -f "$file" ] || continue
             output_name="outputs/presentations/$(basename "$file" .md).pptx"
-            marp "$file" --pptx --output "$output_name"
-          done || echo "No presentations found"
+            marp "$file" --pptx --output "$output_name" --allow-local-files
+          done
 
-      # Upload all artifacts
+      # Upload artifacts
       - name: Upload artifacts
         uses: actions/upload-artifact@v4
         with:
