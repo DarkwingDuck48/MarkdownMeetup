@@ -30,7 +30,7 @@ jobs:
           mkdir -p outputs
            # Copy images to a temporary directory (prevents path issues)
           mkdir -p temp_images
-          find docs -name "*.jpg" -exec cp {} temp_images/ \;
+          find docs/one_file/images -name "*.jpg" -exec cp {} temp_images/ \;
           
           # Convert individual MD files to DOCX
           if [ -d "docs/one_file" ] && [ "$(ls -A docs/one_file/*.md 2>/dev/null)" ]; then
