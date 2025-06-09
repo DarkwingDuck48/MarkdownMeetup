@@ -1,0 +1,67 @@
+name: Release Documentation
+
+on:
+  push:
+    tags:
+      - 'v*'  # Trigger on version tags (e.g., v1.0.0)
+
+jobs:
+  build-and-release:
+    runs-on: ubuntu-latest
+    steps:
+      # Checkout code
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      # Install tools
+      - name: Install dependencies
+        run: |
+          sudo apt-get install pandoc -y
+          npm install -g @marp-team/marp-cli
+
+      # Convert all documents
+      - name: Generate documents
+        run: |
+          mkdir -p dist
+          
+          # Single files to DOCX
+          if [ -d "docs/one_file" ]; then
+            for file in docs/one_file/*.md; do
+              [ -f "$file" ] || continue
+              pandoc "$file" -f markdown -t docx -o "dist/$(basename "$file" .md).docx"
+            done
+          fi
+
+          # Combined document
+          if [ -d "docs/one_file" ]; then
+            pandoc docs/one_file/*.md -f markdown -t docx -o "dist/combined.docx" --toc
+          fi
+
+          # Presentations
+          if [ -d "slides" ]; then
+            mkdir -p dist/presentations
+            for file in slides/*_presentation.md; do
+              [ -f "$file" ] || continue
+              marp "$file" --pptx -o "dist/presentations/$(basename "$file" .md).pptx"
+            done
+          fi
+
+      - name: Add version to filenames
+        run: |
+            for f in dist/*; do
+            mv "$f" "${f%.*}_${{ github.ref_name }}.${f##*.}"
+            done
+
+      # Create release and upload assets
+      - name: Create Release
+        uses: softprops/action-gh-release@v1
+        with:
+          files: |
+            dist/*.docx
+            dist/presentations/*.pptx
+          tag_name: ${{ github.ref_name }}
+          name: "Release ${{ github.ref_name }}"
+          body: "Automated documentation release"
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
