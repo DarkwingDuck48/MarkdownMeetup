@@ -61,7 +61,7 @@ jobs:
           
           # Convert with proper resource paths
           pandoc docs/one_file/*.md \
-            -o dist/combined2.docx \
+            -o outputs/combined2.docx \
             --resource-path=.:docs/one_file:pandoc_workdir \
             --extract-media=pandoc_workdir \
             --toc
