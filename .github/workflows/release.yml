@@ -47,12 +47,6 @@ jobs:
             done
           fi
 
-      - name: Add version to filenames
-        run: |
-            for f in dist/*; do
-            mv "$f" "${f%.*}_${{ github.ref_name }}.${f##*.}"
-            done
-
       # Create release and upload assets
       - name: Create Release
         uses: softprops/action-gh-release@v1
