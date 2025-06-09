@@ -38,7 +38,7 @@ jobs:
 
           # Combined document
           if ls docs/sep_files/*.md 1> /dev/null 2>&1; then
-            pandoc docs/sep_files/*.md -f markdown -t docx -o "dist/combined.docx" --toc
+            pandoc docs/sep_files/*.md -f markdown -t docx -o "dist/combined.docx" --toc --toc-depth=3
           fi
 
           # Presentations
@@ -57,9 +57,9 @@ jobs:
             files: |
                 dist/*.docx
                 dist/presentations/*.pptx
-                tag_name: ${{ github.ref_name }}
-                name: "Version ${{ github.ref_name }}"
-                body: |
+            tag_name: ${{ github.ref_name }}
+            name: "Version ${{ github.ref_name }}"
+            body: |
                 Documentation for ${{ github.ref_name }}
                 Generated on $(date -u +'%Y-%m-%d')
             
