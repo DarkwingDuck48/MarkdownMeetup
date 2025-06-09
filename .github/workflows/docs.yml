@@ -30,10 +30,19 @@ jobs:
           mkdir -p outputs
           
           # Convert individual MD files to DOCX
-          for file in $(find docs/one_file -name "*.md"); do
-            output_name="outputs/$(basename "$file" .md).docx"
-            pandoc "$file" -f markdown -t docx -o "$output_name"
-          done
+          if [ -d "docs/one_file" ] && [ "$(ls -A docs/one_file/*.md 2>/dev/null)" ]; then
+            echo "Converting Markdown files in docs/one_file/"
+            
+            # Convert each MD file to DOCX
+            for file in docs/one_file/*.md; do
+              [ -f "$file" ] || continue  # Skip if not a regular file
+              output_name="outputs/$(basename "$file" .md).docx"
+              echo "Converting $file to $output_name"
+              pandoc "$file" -f markdown -t docx -o "$output_name"
+            done
+          else
+            echo "No Markdown files found in docs/one_file/"
+          fi
           
           # Convert README to PDF
           # pandoc docs/README.md -o outputs/README.pdf
