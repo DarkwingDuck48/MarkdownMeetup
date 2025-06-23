@@ -23,24 +23,6 @@ jobs:
           npm install -g @mermaid-js/mermaid-cli @marp-team/marp-cli
           pip install pandoc-mermaid-filter
 
-      # Process Mermaid diagrams
-      - name: Convert Mermaid to images
-        run: |
-          mkdir -p dist/mermaid
-          find docs -name "*.md" -exec grep -l "```mermaid" {} \; | while read file; do
-            # Create unique output directory per file
-            dir_hash=$(echo "$file" | md5sum | cut -c1-8)
-            mkdir -p "dist/mermaid/$dir_hash"
-            
-            # Extract and convert each mermaid block
-            awk '/```mermaid/{flag=1; i++; next} /```/{flag=0} flag' "$file" | while read -r code; do
-              if [ -n "$code" ]; then
-                echo "$code" | mmdc -o "dist/mermaid/$dir_hash/diagram_${i}.png" -w 1600 -H 1200 --scale 2
-                sed -i "s|```mermaid.*```|![](mermaid/$dir_hash/diagram_${i}.png)|g" "$file"
-              fi
-            done
-          done
-
       # Process images and documents
       - name: Process documents
         run: |
