@@ -36,7 +36,7 @@ jobs:
               pandoc "$file" -f markdown -t docx -o "$output_name" \
                 --resource-path=.:docs/one_file:dist \
                 --extract-media=dist \
-                --filter pandoc-mermaid \
+                --filter pandoc-mermaid
             done
           fi
 
