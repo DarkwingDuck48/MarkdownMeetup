@@ -15,7 +15,7 @@ toc: true                         # Show table of contents
 toc-depth: 3                      # Show down to h3 headers
 numbersections: true              # Number sections
 geometry: "margin=1in"            # Page margins
-mainfont: "Calibri"       # Default font
+mainfont: "Calibri"               # Default font
 fontsize: 14pt                    # Base font size
 linestretch: 1.25                 # Line spacing
 

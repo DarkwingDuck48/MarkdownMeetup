@@ -35,8 +35,7 @@ jobs:
               output_name="outputs/$(basename "$file" .md).docx"
               pandoc "$file" -f markdown -t docx -o "$output_name" \
                 --resource-path=.:docs/one_file:dist \
-                --extract-media=dist \
-                --filter pandoc-mermaid
+                --extract-media=dist
             done
           fi
 
@@ -46,8 +45,7 @@ jobs:
               --toc \
               --resource-path=.:docs/sep_files:dist \
               --extract-media=dist \
-              --metadata-file=docs/meta.yaml \
-              --filter pandoc-mermaid
+              --metadata-file=docs/meta.yaml
           fi
 
       # Process presentations
