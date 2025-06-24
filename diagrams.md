@@ -1,4 +1,6 @@
 
+# Диаграммы в Markdown
+
 [Examples](https://mermaid.js.org/syntax/gitgraph.html)
 
 ```mermaid
@@ -33,7 +35,9 @@ gantt
     Add gantt diagram to demo page      :20h
     Add another diagram to demo page    :48h
 ```
+
 ---
+
 ```mermaid
 ---
 title: Animal example
