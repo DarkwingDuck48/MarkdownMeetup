@@ -61,16 +61,5 @@ jobs:
             name: "Version ${{ github.ref_name }}"
             body: |
                 Documentation for ${{ github.ref_name }}
-                Generated on $(date -u +'%Y-%m-%d %H:%M:%S UTC')
-                
-                ### Included Files:
-                $(
-                    echo "- Combined document: dist/combined.docx"
-                    for file in dist/*.docx dist/presentations/*.pptx; do
-                    if [ -f "$file" ]; then
-                        echo "- $(basename "$file")"
-                    fi
-                    done
-                )
         env:
             GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
