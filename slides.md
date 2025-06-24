@@ -288,6 +288,8 @@ transition: slide-up
 
 <br>
 
+🤩[Описание стандарта от разработчика Markdown - John Gruber](https://daringfireball.net/projects/markdown/)
+
 👨‍💻 [GitHub для митапа](https://github.com/DarkwingDuck48/MarkdownMeetup#)
 
 🗒️ [Cheat Sheet Markdown](https://www.markdownguide.org/cheat-sheet/)
