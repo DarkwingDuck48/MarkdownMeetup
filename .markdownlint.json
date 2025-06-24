@@ -12,5 +12,8 @@
             "img"
         ]
     },
+    "MD025": {
+        "level": 2
+    },
     "no-hard-tabs": false
 }

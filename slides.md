@@ -250,3 +250,32 @@ layout: fact
 ---
 
 # Покажу на простом примере
+
+---
+transition: fade
+layout: fact
+---
+
+# 🚫 No Office Used!
+
+<br>
+
+Ни один продукт Microsoft Office не был использован при подготовке к митапу!
+
+--- 
+transition: slide-up
+---
+
+# Полезные ссылки
+
+<br>
+
+👨‍💻 [GitHub для митапа](https://github.com/DarkwingDuck48/MarkdownMeetup#)
+
+🗒️ [Cheat Sheet Markdown](https://www.markdownguide.org/cheat-sheet/)
+
+🔥 [Презентации в Markdown](https://sli.dev)
+
+📊 [Диаграммы в Markdown](https://mermaid.js.org/syntax/gitgraph.html)
+
+📗 [Obsidian](https://obsidian.md/)
