@@ -84,7 +84,8 @@ print(some_msg)
 <img src="images/pronyra.jpg" alt="drawing" width="200" style="transform:rotate(45deg);"/>
 </center>
 
----
+<br />
+
 
 ## 1.2. Таблицы
 
@@ -92,6 +93,7 @@ print(some_msg)
 |:-----------|------------:|:-----------:|
 | 1          |            2|            3|
 |Привет<---| --->Мир| Очень большая строка, которую надо обязательно поместить! |
+|Lalal| SomeBaseString| hdksjfhsjfh |
 
 ---
 
