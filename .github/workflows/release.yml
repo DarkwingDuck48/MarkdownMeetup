@@ -26,28 +26,26 @@ jobs:
       # Convert documents
       - name: Generate documents
         run: |
-          mkdir -p dist
+          mkdir -p outputs
           
-          # Single files to DOCX
+          # Convert individual files
           if [ -d "docs/one_file" ]; then
             for file in docs/one_file/*.md; do
               [ -f "$file" ] || continue
-              pandoc "$file" -f markdown -t docx -o "dist/$(basename "$file" .md).docx"
+              output_name="outputs/$(basename "$file" .md).docx"
+              pandoc "$file" -f markdown -t docx -o "$output_name" \
+                --resource-path=.:docs/one_file:dist \
+                --extract-media=dist 
             done
           fi
 
-          # Combined document
+          # Create combined document
           if ls docs/sep_files/*.md 1> /dev/null 2>&1; then
-            pandoc docs/sep_files/*.md -f markdown -t docx -o "dist/combined.docx" --toc --toc-depth=3
-          fi
-
-          # Presentations
-          if [ -d "slides" ]; then
-            mkdir -p dist/presentations
-            for file in slides/*_presentation.md; do
-              [ -f "$file" ] || continue
-              marp "$file" --pptx -o "dist/presentations/$(basename "$file" .md).pptx"
-            done
+            pandoc docs/sep_files/*.md -o outputs/combined.docx \
+              --toc \
+              --resource-path=.:docs/sep_files:dist \
+              --extract-media=dist \
+              --metadata-file=docs/meta.yaml
           fi
 
       # Create release
@@ -55,8 +53,8 @@ jobs:
         uses: softprops/action-gh-release@v1
         with:
             files: |
-                dist/*.docx
-                dist/presentations/*.pptx
+                outputs/*.docx
+                outputs/presentations/*.pptx
             tag_name: ${{ github.ref_name }}
             name: "Version ${{ github.ref_name }}"
             body: |
