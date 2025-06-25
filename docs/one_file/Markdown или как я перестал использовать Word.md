@@ -94,6 +94,7 @@ print(some_msg)
 | 1          |            2|            3|
 |Привет<---| --->Мир| Очень большая строка, которую надо обязательно поместить! |
 |Lalal| SomeBaseString| hdksjfhsjfh |
+|klajd| ldhf;lgkh| asdalkdjh;qlaih' |
 
 ---
 
